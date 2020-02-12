@@ -1,6 +1,7 @@
 package com.codeclan.example.WhiskyTracker.controllers;
 
 import com.codeclan.example.WhiskyTracker.models.Whisky;
+import com.codeclan.example.WhiskyTracker.repositories.DistilleryRepository.DistilleryRepository;
 import com.codeclan.example.WhiskyTracker.repositories.WhiskyRepository.WhiskyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,9 @@ import java.util.Optional;
 
 @RestController
 public class WhiskyController {
+
+    @Autowired
+    private DistilleryRepository distilleryRepository;
 
     @Autowired
     private WhiskyRepository whiskyRepository;
@@ -26,9 +30,15 @@ public class WhiskyController {
         return new ResponseEntity<>(whiskyRepository.findById(id), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/whiskies/age")
-    public ResponseEntity<List<Whisky>> findAged(@RequestParam(name="aged") int age) {
-        List<Whisky> whiskies = whiskyRepository.readByAge(age);
+    @GetMapping(value = "/whiskies/year")
+    public ResponseEntity<List<Whisky>> getWhiskyByYear(@RequestParam(name="year") int year) {
+        List<Whisky> whiskies = whiskyRepository.findByYear(year);
+        return new ResponseEntity<>(whiskies, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/whiskies/region")
+    public ResponseEntity<List<Whisky>> getWhiskyByRegion(@RequestParam(name="region") String region) {
+        List<Whisky> whiskies = whiskyRepository.findByDistilleryRegionIgnoreCase(region);
         return new ResponseEntity<>(whiskies, HttpStatus.OK);
     }
 
